@@ -9,6 +9,7 @@ import android.widget.ImageView
 object AmbilightEngine {
     
     @JvmStatic
+    @androidx.annotation.RequiresApi(Build.VERSION_CODES.S)
     fun applyMassiveBloom(context: Context, backgroundView: ImageView) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
             // Read the user's custom settings from Morphe SharedPreferences

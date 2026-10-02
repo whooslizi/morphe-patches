@@ -32,7 +32,8 @@ jobs:
         
       - name: Download Morphe CLI (Patcher)
         run: |
-          wget -qO patcher.jar https://github.com/revanced/revanced-cli/releases/latest/download/revanced-cli.jar
+          URL=$(curl -s https://api.github.com/repos/revanced/revanced-cli/releases/latest | grep "browser_download_url" | grep ".jar" | cut -d '"' -f 4)
+          wget -qO patcher.jar $URL
 
       - name: Download YouTube APK
         run: |

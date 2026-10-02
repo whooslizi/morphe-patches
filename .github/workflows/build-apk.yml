@@ -23,6 +23,9 @@ jobs:
           distribution: 'zulu'
 
       - name: Build Morphe Patches & Extensions
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_ACTOR: ${{ github.actor }}
         run: |
           chmod +x gradlew
           ./gradlew build

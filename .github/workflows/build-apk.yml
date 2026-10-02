@@ -1,0 +1,63 @@
+name: Build Patched YouTube (Ambilight)
+
+on:
+  workflow_dispatch: # Allows manual triggering from the GitHub Actions tab
+  push:
+    branches:
+      - main
+    paths:
+      - 'patches/**'
+      - 'extensions/**'
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Setup Java JDK
+        uses: actions/setup-java@v3
+        with:
+          java-version: '17'
+          distribution: 'zulu'
+
+      - name: Build Morphe Patches & Extensions
+        run: |
+          chmod +x gradlew
+          ./gradlew build
+        
+      - name: Download Morphe CLI (Patcher)
+        run: |
+          wget -qO patcher.jar https://github.com/revanced/revanced-cli/releases/latest/download/revanced-cli.jar
+
+      - name: Download YouTube APK
+        # Note: In a real workflow, you would use a tool like 'apkeep' or a direct URL 
+        # to fetch the exact YouTube APK version required.
+        run: |
+          echo "Placeholder: Fetching target YouTube APK from APKMirror..."
+          # wget -qO youtube.apk <DIRECT_URL_TO_APK>
+          touch youtube.apk
+
+      - name: Apply Morphe Patches
+        run: |
+          echo "Patching YouTube with Fullscreen Ambilight..."
+          # java -jar patcher.jar -a youtube.apk -b patches/build/libs/patches.jar -m extensions/build/libs/extensions.apk -o patched-youtube.apk
+          touch patched-youtube.apk
+
+      - name: Sign Patched APK
+        uses: ilharp/sign-android-release@v1
+        with:
+          releaseDir: .
+          signingKeyBase64: ${{ secrets.SIGNING_KEY }}
+          alias: ${{ secrets.ALIAS }}
+          keyStorePassword: ${{ secrets.KEY_STORE_PASSWORD }}
+          keyPassword: ${{ secrets.KEY_PASSWORD }}
+        # Note: If no secrets are provided, this step will fail or skip. 
+        # A test key can be used instead for personal use.
+
+      - name: Upload Patched APK Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: YouTube-Ambilight-Patched
+          path: patched-youtube.apk

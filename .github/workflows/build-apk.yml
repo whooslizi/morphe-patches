@@ -38,7 +38,7 @@ jobs:
       - name: Download YouTube APK
         run: |
           # Download apkeep tool dynamically
-          APKEEP_URL=$(curl -s https://api.github.com/repos/EFForg/apkeep/releases/latest | grep "browser_download_url" | grep "x86_64-unknown-linux-musl" | cut -d '"' -f 4)
+          APKEEP_URL=$(curl -s https://api.github.com/repos/EFForg/apkeep/releases/latest | grep "browser_download_url" | grep "x86_64-unknown-linux-gnu" | grep -v "\.sig" | cut -d '"' -f 4)
           wget -qO apkeep $APKEEP_URL
           chmod +x apkeep
           
